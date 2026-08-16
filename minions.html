@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minions — CHEGG</title>
+<meta name="description" content="Every minion in Chegg — move patterns, attack ranges, mana cost and special abilities.">
+<link rel="icon" href="src/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="brand-egg"></span>CHEGG</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="how-to-play.html">How to Play</a></li>
+      <li><a href="minions.html" class="active">Minions</a></li>
+      <li><a href="discord.html">Discord</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="ip-pill">
+        <div><div class="ip-label">SERVER IP</div><div class="ip-value">acorezero.qzz.io:20503</div></div>
+        <button class="copy-btn" data-copy-ip aria-label="Copy server IP">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span class="copy-label">Copy</span>
+        </button>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<header style="padding:56px 0 0;">
+  <div class="container">
+    <span class="eyebrow">BESTIARY</span>
+    <h1 style="font-size:clamp(28px,4vw,42px); max-width:700px;">The Minions</h1>
+    <p style="max-width:640px; font-size:16px;">18 minions, from the 1-mana Zombie to the board-clearing 6-mana Wither. Every card shows its move pattern in green and its attack pattern in red, on a small preview of the checkerboard.</p>
+  </div>
+</header>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="filter-bar">
+      <button class="filter-chip active" data-filter="all">All minions</button>
+      <button class="filter-chip" data-filter="king">King</button>
+      <button class="filter-chip" data-filter="offense">Offense</button>
+      <button class="filter-chip" data-filter="support">Support</button>
+      <button class="filter-chip" data-filter="utility">Utility</button>
+      <button class="filter-chip" data-filter="defense">Defense</button>
+    </div>
+
+    <div class="pattern-legend" style="margin-bottom:24px;">
+      <span><i style="background:#5c8a4c"></i>Move</span>
+      <span><i style="background:#a9392a"></i>Attack</span>
+      <span><i style="background:#d9a441"></i>This minion</span>
+      <span style="color:var(--cream-dim);">— patterns are stylized to a 7×7 preview; see How to Play for exact range rules.</span>
+    </div>
+
+    <div class="minion-grid" id="minion-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 CHEGG Server. Chegg the game was created by Gerg — this is the official server built around it.</span>
+      <span>IP: acorezero.qzz.io:20503</span>
+    </div>
+  </div>
+</footer>
+
+<script src="minions-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

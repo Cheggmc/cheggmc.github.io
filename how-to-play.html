@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Play — CHEGG</title>
+<meta name="description" content="Full rules for Chegg: the board, deck building, mana, spawning, attacking, dashing and arena mods.">
+<link rel="icon" href="src/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="brand-egg"></span>CHEGG</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="how-to-play.html" class="active">How to Play</a></li>
+      <li><a href="minions.html">Minions</a></li>
+      <li><a href="discord.html">Discord</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="ip-pill">
+        <div><div class="ip-label">SERVER IP</div><div class="ip-value">acorezero.qzz.io:20503</div></div>
+        <button class="copy-btn" data-copy-ip aria-label="Copy server IP">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span class="copy-label">Copy</span>
+        </button>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<header style="padding:56px 0 0;">
+  <div class="container">
+    <span class="eyebrow">DOCS</span>
+    <h1 style="font-size:clamp(28px,4vw,42px); max-width:700px;">How to Play</h1>
+    <p style="max-width:640px; font-size:16px;">Everything you need to sit down at a board and play a full match — straight from Gerg's original ruleset, adapted for the server.</p>
+  </div>
+</header>
+
+<section class="section-tight">
+  <div class="container doc-layout">
+
+    <aside class="doc-toc">
+      <h4>ON THIS PAGE</h4>
+      <ul>
+        <li><a href="#basics">1. The Basics</a></li>
+        <li><a href="#board">2. The Board</a></li>
+        <li><a href="#goal">3. The Goal</a></li>
+        <li><a href="#deck">4. Deck Building</a></li>
+        <li><a href="#mana">5. Mana</a></li>
+        <li><a href="#spending">6. Spending Mana</a></li>
+        <li><a href="#dashing">7. Dashing &amp; Timing</a></li>
+        <li><a href="#arenas">8. Arena Mods</a></li>
+      </ul>
+    </aside>
+
+    <div>
+
+      <div class="doc-section" id="basics">
+        <h2><span class="num">01</span>The Basics</h2>
+        <p>Chegg is a turn-based, deck-building strategy game — originally designed to be played live inside Minecraft, and now fully automated on this server. Minions are represented by spawn eggs, drawn from a personal deck, and placed onto a checkerboard-style arena.</p>
+        <p>The game is built to be adaptable. Beyond the roster covered here, players are encouraged to dream up their own minions and house rules with their opponent.</p>
+      </div>
+
+      <div class="doc-section" id="board">
+        <h2><span class="num">02</span>The Board</h2>
+        <p>Chegg is played on a 10×8 checkerboard. The two back rows on either end are colored — one red, one blue — and mark each player's spawn zone.</p>
+        <div class="callout"><strong>Spawn zones are the only place you can place new minions.</strong> Once a minion is on the board, it can move anywhere the rules allow.</div>
+        <p>The middle of the board can be customized by mutual agreement between players — see <a href="#arenas">Arena Mods</a> below for ideas the server supports.</p>
+      </div>
+
+      <div class="doc-section" id="goal">
+        <h2><span class="num">03</span>The Goal</h2>
+        <p>At the start of every match, each player places their Villager somewhere inside their spawn zone. The Villager functions like a King in chess — the goal of the match is to eliminate the opponent's Villager. Whoever does it first wins.</p>
+      </div>
+
+      <div class="doc-section" id="deck">
+        <h2><span class="num">04</span>Deck Building</h2>
+        <p>A deck is 15 minions of your choosing. At the start of a match, your deck is shuffled and you draw from it one minion at a time.</p>
+        <table class="rules-table">
+          <tr><th>Moment</th><th>What happens</th></tr>
+          <tr><td>Start of the match</td><td>Each player draws 3 minions into their opening hand</td></tr>
+          <tr><td>Start of every turn after that</td><td>The player whose turn it is draws 1 minion</td></tr>
+        </table>
+      </div>
+
+      <div class="doc-section" id="mana">
+        <h2><span class="num">05</span>Mana</h2>
+        <p>Mana is the currency behind everything you do on your turn — spawning minions, attacking, dashing, and some unique abilities. Your mana pool ranges from 0 to a cap of 6.</p>
+        <table class="rules-table">
+          <tr><th>Turn</th><th>Mana available</th></tr>
+          <tr><td>Turn 1</td><td>1</td></tr>
+          <tr><td>Turn 2</td><td>2</td></tr>
+          <tr><td>…</td><td>…</td></tr>
+          <tr><td>Turn 6 and beyond</td><td>6 (capped)</td></tr>
+        </table>
+        <p>Mana fully refreshes at the start of every turn — anything you don't spend is discarded, not saved.</p>
+      </div>
+
+      <div class="doc-section" id="spending">
+        <h2><span class="num">06</span>Spending Mana</h2>
+        <p>There are three core ways to spend mana:</p>
+        <p><strong>Spawning.</strong> Every minion has a mana cost, shown on its card. Spawn it from your hand onto any open square in your spawn zone.</p>
+        <p><strong>Attacking.</strong> Attacking always costs 1 mana, no matter which minion is attacking — the range and shape of the attack depends entirely on the minion. As an example: a Skeleton can strike diagonally up to 3 squares away, so for a single mana it can eliminate an enemy sitting on that diagonal.</p>
+
+        <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin:20px 0;">
+          <div class="pattern-grid" data-example-pattern data-move='[]' data-attack='[[-1,-1],[-2,-2],[-3,-3],[-1,1],[-2,2],[-3,3],[1,-1],[2,-2],[3,-3],[1,1],[2,2],[3,3]]'></div>
+          <div style="max-width:340px;">
+            <p style="margin:0; font-size:13.5px;">Example: a Skeleton's attack range (shown in red). It moves laterally, but strikes diagonally up to 3 squares out.</p>
+            <div class="pattern-legend">
+              <span><i style="background:#5c8a4c"></i>Move</span>
+              <span><i style="background:#a9392a"></i>Attack</span>
+              <span><i style="background:#d9a441"></i>Minion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">Each minion can only attack once per turn — no matter how much mana you're willing to spend.</div>
+      </div>
+
+      <div class="doc-section" id="dashing">
+        <h2><span class="num">07</span>Dashing &amp; Timing</h2>
+        <p><strong>Dashing.</strong> Every minion on the board gets 1 free move per turn. After that free move is used, it can move again for 1 mana — that's a dash. A minion cannot dash and attack in the same turn, and it can't move again after attacking, even with its free move still unused.</p>
+        <p>A minion's dash usually extends its normal move pattern further in the same directions.</p>
+        <div class="callout"><strong>New minions sit out their first turn.</strong> A freshly spawned minion cannot move, attack, dash, or use an ability until the turn after it's placed.</div>
+        <p>Friendly fire is real for area attacks like the Creeper and Puffer-Fish — double-check what's standing near your target before you commit.</p>
+      </div>
+
+      <div class="doc-section" id="arenas">
+        <h2><span class="num">08</span>Arena Mods</h2>
+        <p>Beyond the standard checkerboard, boards can be modified by mutual agreement — a river splitting the middle with a single bridge, walls, natural barriers, lava, or hazards that push minions around. Certain minions, like the Puffer-Fish or Phantom, make natural sense crossing terrain other minions can't.</p>
+        <p>House rules like these are baked into the spirit of Chegg — feel free to agree on your own arena twists with your opponent before a match.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 CHEGG Server. Chegg the game was created by Gerg — this is the official server built around it.</span>
+      <span>IP: acorezero.qzz.io:20503</span>
+    </div>
+  </div>
+</footer>
+
+<script src="minions-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
