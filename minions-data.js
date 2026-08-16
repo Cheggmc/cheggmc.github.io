@@ -12,6 +12,7 @@ const DIAG3RANGE = [[-1,-1],[-2,-2],[-3,-3],[-1,1],[-2,2],[-3,3],[1,-1],[2,-2],[
 const LAT2RANGE  = [[-1,0],[-2,0],[1,0],[2,0],[0,-1],[0,-2],[0,1],[0,2]];
 const CROSS3  = [[-1,0],[-2,0],[-3,0],[1,0],[2,0],[3,0],[0,-1],[0,-2],[0,-3],[0,1],[0,2],[0,3]];
 const DIAMOND = [...RING8, ...LAT2];
+const SLIME = [[0,-2],[0,2],[-2,-2],[-2,0],[-2,2],[2,-2],[2,0],[2,2]];
 
 const MINIONS = [
   {
@@ -104,7 +105,7 @@ const MINIONS = [
     move:"Jumps 2 squares laterally, leaping clean over anything in its path.",
     attack:"Lands on and hits whatever occupies its destination square — costs 1 mana if that square is occupied (can't combine with a dash).",
     ability:"A mobile bruiser that ignores blockers entirely.",
-    movePattern:LAT2, attackPattern:LAT2
+    movePattern:SLIME, attackPattern:SLIME
   },
   {
     id:"shulkerbox", name:"Shulker-Box", cost:4, tier:"defense", img:"src/mob-shulkerbox.png",
