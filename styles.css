@@ -148,7 +148,7 @@ p{margin:0 0 1em;color:var(--cream-dim);}
 /* ---------- hero ---------- */
 .hero{
   position:relative; overflow:hidden;
-  padding:96px 0 72px;
+  padding:96px 0 32px;
   border-bottom:1px solid var(--line);
 }
 .hero::before{
