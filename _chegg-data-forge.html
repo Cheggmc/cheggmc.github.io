@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Data Forge</title>
+<style>
+  :root{
+    --void:#0c0b0e; --panel:#17151a; --panel-2:#1e1b21; --line:rgba(233,226,211,.1);
+    --cream:#e9e2d3; --cream-dim:#b8ae9c; --amber:#d9a441; --amber-hi:#f2c369;
+    --green:#5c8a4c; --red:#a9392a; --frame:#5b4128;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--void);color:var(--cream);font-family:-apple-system,Segoe UI,Inter,sans-serif;font-size:14px;}
+  h1{font-size:16px;margin:0;letter-spacing:.03em;}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--cream-dim);margin:0 0 10px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel);}
+  .topbar .right{display:flex;gap:8px;}
+  .layout{display:grid;grid-template-columns:260px 1fr 340px;gap:0;height:calc(100vh - 53px);}
+  .col{overflow-y:auto;padding:16px;}
+  .col + .col{border-left:1px solid var(--line);}
+  button{
+    font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;
+    background:var(--panel-2);color:var(--cream);border:1px solid var(--line);border-radius:6px;padding:7px 12px;
+  }
+  button:hover{border-color:var(--cream-dim);}
+  button.primary{background:var(--amber);color:#241a08;border-color:var(--amber);}
+  button.primary:hover{background:var(--amber-hi);}
+  button.danger{background:rgba(169,57,42,.18);color:#e79484;border-color:rgba(169,57,42,.4);}
+  button.small{padding:3px 7px;font-size:11px;}
+  input,select,textarea{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--cream);
+    border-radius:6px;padding:8px 9px;font-family:inherit;font-size:13px;margin-bottom:10px;
+  }
+  textarea{resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;}
+  label{display:block;font-size:11px;color:var(--cream-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .field-row{display:flex;gap:8px;}
+  .field-row > div{flex:1;}
+
+  .minion-item{
+    display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);
+    border-radius:6px;margin-bottom:6px;background:var(--panel-2);cursor:pointer;
+  }
+  .minion-item.active{border-color:var(--amber);background:rgba(217,164,65,.08);}
+  .minion-item .mi-name{flex:1;font-weight:600;}
+  .minion-item .mi-cost{font-size:11px;color:var(--amber);}
+  .minion-item .mi-actions{display:flex;gap:4px;}
+
+  .grid-editor{
+    display:grid;grid-template-columns:repeat(7,26px);grid-template-rows:repeat(7,26px);gap:2px;
+    background:var(--panel-2);padding:6px;border-radius:8px;border:1px solid var(--frame);width:max-content;
+  }
+  .grid-editor .cell{width:26px;height:26px;border-radius:3px;background:#241f27;cursor:pointer;}
+  .grid-editor .cell.on{background:var(--gridcolor,var(--green));}
+  .grid-editor .cell.center{background:var(--amber);cursor:default;}
+  .grid-block{margin-bottom:18px;}
+  .grid-block .legend{font-size:11px;color:var(--cream-dim);margin-top:6px;}
+
+  .export-box{display:flex;flex-direction:column;height:100%;}
+  .export-box textarea{flex:1;min-height:200px;}
+  .export-actions{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .hint{font-size:11.5px;color:var(--cream-dim);margin-bottom:14px;line-height:1.5;}
+  .divider{height:1px;background:var(--line);margin:16px 0;}
+  .tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;background:var(--panel-2);color:var(--cream-dim);border:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🥚 Chegg Data Forge — internal tool, not linked from the site</h1>
+  <div class="right">
+    <button id="btn-new">+ New minion</button>
+    <button id="btn-duplicate">Duplicate</button>
+    <button class="danger" id="btn-delete">Delete</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: minion list -->
+  <div class="col">
+    <h2>Roster (<span id="count">0</span>)</h2>
+    <div id="minion-list"></div>
+  </div>
+
+  <!-- MIDDLE: editor form -->
+  <div class="col" id="editor-col">
+    <h2>Edit minion</h2>
+    <div id="editor-form"></div>
+  </div>
+
+  <!-- RIGHT: import/export -->
+  <div class="col export-box">
+    <h2>Export</h2>
+    <div class="hint">Generates a full <span class="tag">minions-data.js</span> replacement using this tool's current roster. Copy it or download it, then drop it over your existing file.</div>
+    <div class="export-actions">
+      <button class="primary" id="btn-generate">Generate file</button>
+      <button id="btn-copy">Copy to clipboard</button>
+      <button id="btn-download">Download .js</button>
+    </div>
+    <textarea id="export-output" spellcheck="false" placeholder="Click 'Generate file' to preview the output here…"></textarea>
+
+    <div class="divider"></div>
+    <h2>Import existing data</h2>
+    <div class="hint">Paste the contents of a <span class="tag">minions-data.js</span> file below and load it to replace the current roster in this tool.</div>
+    <textarea id="import-input" spellcheck="false" rows="6" placeholder="Paste minions-data.js contents here…"></textarea>
+    <button id="btn-import">Load into editor</button>
+  </div>
+
+</div>
+
+<script>
+/* ---------- pattern helpers ---------- */
+const RING8 = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const LAT1 = [[-1,0],[1,0],[0,-1],[0,1]];
+const DIAG1 = [[-1,-1],[-1,1],[1,-1],[1,1]];
+const LAT2 = [[-2,0],[2,0],[0,-2],[0,2]];
+const FWD3 = [[-1,-1],[-1,0],[-1,1]];
+const DIAG3RANGE = [[-1,-1],[-2,-2],[-3,-3],[-1,1],[-2,2],[-3,3],[1,-1],[2,-2],[3,-3],[1,1],[2,2],[3,3]];
+const LAT2RANGE = [[-1,0],[-2,0],[1,0],[2,0],[0,-1],[0,-2],[0,1],[0,2]];
+const CROSS3 = [[-1,0],[-2,0],[-3,0],[1,0],[2,0],[3,0],[0,-1],[0,-2],[0,-3],[0,1],[0,2],[0,3]];
+const DIAMOND = [...RING8, ...LAT2];
+const SLIME = [[0,-2],[0,2],[-2,-2],[-2,0],[-2,2],[2,-2],[2,0],[2,2]];
+
+const TIERS = ["king","offense","support","utility","defense"];
+
+/* ---------- default roster (current live data) ---------- */
+let MINIONS = [
+  { id:"villager", name:"Villager", cost:0, costLabel:"Free", tier:"king", img:"src/mob-villager.png",
+    move:"8 surrounding squares — attacking moves it onto the target square.",
+    attack:"Same 8 squares as its move.",
+    ability:"This is your king. Lose it and you lose the match. Unlike every other minion, moving the Villager always costs 1 mana — even a free move — so dashing it costs 2 mana total.",
+    movePattern:RING8, attackPattern:RING8 },
+  { id:"zombie", name:"Zombie", cost:1, tier:"offense", img:"src/mob-zombie.png",
+    move:"Forward only — one of the three squares directly ahead.",
+    attack:"The 4 lateral squares immediately around it.",
+    ability:"A cheap, simple frontline unit. No special ability.",
+    movePattern:FWD3, attackPattern:LAT1 },
+  { id:"creeper", name:"Creeper", cost:1, tier:"offense", img:"src/mob-creeper.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"One-time detonation — destroys every minion in the 8 surrounding squares, including itself.",
+    ability:"Friendly fire applies. A high-risk, high-reward finisher — place it carefully.",
+    movePattern:RING8, attackPattern:RING8 },
+  { id:"pig", name:"Pig", cost:1, tier:"support", img:"src/mob-pig.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"None — the Pig can't attack.",
+    ability:"Draw 1 card the moment it's spawned, and draw 1 more when it dies. Pure card advantage.",
+    movePattern:RING8, attackPattern:[] },
+  { id:"rabbit", name:"Rabbit", cost:2, tier:"support", img:"src/mob-rabbit.png",
+    move:"Hops 2 squares in any lateral direction.",
+    attack:"None — the Rabbit can't attack.",
+    ability:"If its hop jumps over any minion — friend or foe — its owner draws 1 card.",
+    movePattern:LAT2, attackPattern:[] },
+  { id:"pufferfish", name:"Puffer-Fish", cost:2, tier:"offense", img:"src/mob-pufferfish.png",
+    move:"1 square, laterally only.",
+    attack:"All 4 diagonal squares around it, simultaneously.",
+    ability:"A cheap area-denial piece. Watch out for friendly fire on the diagonal burst.",
+    movePattern:LAT1, attackPattern:DIAG1 },
+  { id:"irongolem", name:"Iron Golem", cost:2, tier:"offense", img:"src/mob-irongolem.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"A sweeping strike across 3 tiles in one chosen lateral direction.",
+    ability:"Low cost for a wide, line-clearing swing.",
+    movePattern:RING8, attackPattern:FWD3 },
+  { id:"frog", name:"Frog", cost:2, tier:"utility", img:"src/mob-frog.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"None — the Frog can't destroy enemies directly.",
+    ability:"Special (1 mana): pull any minion, friend or foe, 2 squares closer along a lateral line, from any range.",
+    movePattern:RING8, attackPattern:[], copyLimit:"Deck limit: max 2 per deck" },
+  { id:"skeleton", name:"Skeleton", cost:3, tier:"offense", img:"src/mob-skeleton.png",
+    move:"1 square, laterally only.",
+    attack:"Diagonal sniping, up to 3 squares away.",
+    ability:"Great reach for the cost, but boxed into lateral movement to get there.",
+    movePattern:LAT1, attackPattern:DIAG3RANGE },
+  { id:"blaze", name:"Blaze", cost:3, tier:"offense", img:"src/mob-blaze.png",
+    move:"1 square, diagonally only.",
+    attack:"Lateral fire, up to 2 squares away.",
+    ability:"The mirror image of the Skeleton — diagonal legs, lateral aim.",
+    movePattern:DIAG1, attackPattern:LAT2RANGE },
+  { id:"phantom", name:"Phantom", cost:3, tier:"offense", img:"src/mob-phantom.png",
+    move:"Dark tiles only — it can be spawned, moved, or attack only on the board's dark squares.",
+    attack:"Any dark tile it could otherwise move to (standard 1 mana attack cost).",
+    ability:"Highly mobile within its restriction, but boxed out of light tiles entirely.",
+    movePattern:RING8, attackPattern:RING8 },
+  { id:"enderman", name:"Enderman", cost:4, tier:"utility", img:"src/mob-enderman.png",
+    move:"Cannot move under its own power.",
+    attack:"Any of the 8 surrounding squares.",
+    ability:"Special (1 mana), 'Teleport': swap places with any minion — friend or foe, except the Villager — along a lateral line at any range. Can't teleport and attack the same turn.",
+    movePattern:[], attackPattern:RING8 },
+  { id:"slime", name:"Slime", cost:4, tier:"offense", img:"src/mob-slime.png",
+    move:"Jumps 2 squares laterally, leaping clean over anything in its path.",
+    attack:"Lands on and hits whatever occupies its destination square — costs 1 mana if that square is occupied (can't combine with a dash).",
+    ability:"A mobile bruiser that ignores blockers entirely.",
+    movePattern:SLIME, attackPattern:SLIME },
+  { id:"shulkerbox", name:"Shulker-Box", cost:4, tier:"defense", img:"src/mob-shulkerbox.png",
+    move:"Can't move freely — instead it relocates to wherever its attack lands.",
+    attack:"Long-range lateral and vertical fire, blocked by anything standing in the projectile's path.",
+    ability:"A stationary turret that plants itself deeper into the board with every successful hit.",
+    movePattern:[], attackPattern:CROSS3 },
+  { id:"parrot", name:"Parrot", cost:5, tier:"utility", img:"src/mob-parrot.png",
+    move:"A wide, diamond-shaped range across the board.",
+    attack:"None of its own — instead it copies the attack pattern of any minion laterally adjacent to it, friend or foe.",
+    ability:"Turns your best neighboring attacker into a second copy of itself.",
+    movePattern:DIAMOND, attackPattern:[] },
+  { id:"cat", name:"Cat", cost:5, tier:"support", img:"src/mob-cat.png",
+    move:"Cannot move or attack — not even with a dash.",
+    attack:"None.",
+    ability:"Passively grants its owner +1 max mana every turn. Multiple Cats stack.",
+    movePattern:[], attackPattern:[] },
+  { id:"sniffer", name:"Sniffer", cost:5, tier:"utility", img:"src/mob-sniffer.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"None — the Sniffer can't attack.",
+    ability:"On spawn, draw 2 cards from your opponent's deck instead of your own. On death, discard 2 minions from your hand if able.",
+    movePattern:RING8, attackPattern:[] },
+  { id:"wither", name:"Wither", cost:6, tier:"offense", img:"src/mob-wither.png",
+    move:"Any of the 8 surrounding squares.",
+    attack:"Costs 2 mana instead of the usual 1 — fires a lateral projectile 3 squares out, splashing the tiles beside its path.",
+    ability:"On spawn, immediately destroys everything in the 8 surrounding squares — friend or foe. The single most expensive, most explosive minion in the deck.",
+    movePattern:RING8, attackPattern:CROSS3, copyLimit:"Deck limit: max 1 per deck" }
+];
+
+let activeIndex = 0;
+
+/* ---------- rendering ---------- */
+function renderList(){
+  const list = document.getElementById("minion-list");
+  document.getElementById("count").textContent = MINIONS.length;
+  list.innerHTML = "";
+  MINIONS.forEach((m, i) => {
+    const row = document.createElement("div");
+    row.className = "minion-item" + (i === activeIndex ? " active" : "");
+    row.innerHTML = `
+      <span class="mi-name">${m.name || "(unnamed)"}</span>
+      <span class="mi-cost">${m.costLabel || (m.cost + "m")}</span>
+      <span class="mi-actions">
+        <button class="small" data-up="${i}" title="Move up">↑</button>
+        <button class="small" data-down="${i}" title="Move down">↓</button>
+      </span>
+    `;
+    row.addEventListener("click", (e) => {
+      if(e.target.closest("[data-up],[data-down]")) return;
+      activeIndex = i; renderList(); renderForm();
+    });
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-up]").forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.up; if(i > 0){ [MINIONS[i-1],MINIONS[i]] = [MINIONS[i],MINIONS[i-1]]; if(activeIndex===i)activeIndex--; else if(activeIndex===i-1)activeIndex++; renderList(); renderForm(); }
+  }));
+  list.querySelectorAll("[data-down]").forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.down; if(i < MINIONS.length-1){ [MINIONS[i+1],MINIONS[i]] = [MINIONS[i],MINIONS[i+1]]; if(activeIndex===i)activeIndex++; else if(activeIndex===i+1)activeIndex--; renderList(); renderForm(); }
+  }));
+}
+
+function renderForm(){
+  const m = MINIONS[activeIndex];
+  const form = document.getElementById("editor-form");
+  if(!m){ form.innerHTML = "<p style='color:var(--cream-dim)'>No minion selected.</p>"; return; }
+
+  form.innerHTML = `
+    <label>ID (internal, unique)</label>
+    <input id="f-id" value="${esc(m.id||"")}">
+
+    <div class="field-row">
+      <div>
+        <label>Name</label>
+        <input id="f-name" value="${esc(m.name||"")}">
+      </div>
+      <div>
+        <label>Tier</label>
+        <select id="f-tier">${TIERS.map(t => `<option value="${t}" ${t===m.tier?"selected":""}>${t}</option>`).join("")}</select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div>
+        <label>Cost (mana)</label>
+        <input id="f-cost" type="number" min="0" value="${m.cost ?? 0}">
+      </div>
+      <div>
+        <label>Cost label (optional, e.g. "Free")</label>
+        <input id="f-costLabel" value="${esc(m.costLabel||"")}">
+      </div>
+    </div>
+
+    <label>Image path</label>
+    <input id="f-img" value="${esc(m.img||"")}">
+
+    <label>Move description</label>
+    <textarea id="f-move" rows="2">${esc(m.move||"")}</textarea>
+
+    <label>Attack description</label>
+    <textarea id="f-attack" rows="2">${esc(m.attack||"")}</textarea>
+
+    <label>Ability description</label>
+    <textarea id="f-ability" rows="3">${esc(m.ability||"")}</textarea>
+
+    <label>Copy limit (optional, e.g. "Deck limit: max 1 per deck")</label>
+    <input id="f-copyLimit" value="${esc(m.copyLimit||"")}">
+
+    <div class="divider"></div>
+
+    <div class="grid-block">
+      <label>Move pattern — click to toggle (green)</label>
+      <div class="grid-editor" id="grid-move" style="--gridcolor:var(--green)"></div>
+    </div>
+
+    <div class="grid-block">
+      <label>Attack pattern — click to toggle (red)</label>
+      <div class="grid-editor" id="grid-attack" style="--gridcolor:var(--red)"></div>
+    </div>
+  `;
+
+  // wire up text fields -> live update on change
+  const bind = (id, key, isNumber) => {
+    document.getElementById(id).addEventListener("input", (e) => {
+      MINIONS[activeIndex][key] = isNumber ? Number(e.target.value) : e.target.value;
+      if(id === "f-name" || id === "f-cost" || id === "f-costLabel") renderList();
+    });
+  };
+  bind("f-id","id"); bind("f-name","name"); bind("f-tier","tier");
+  bind("f-cost","cost",true); bind("f-costLabel","costLabel");
+  bind("f-img","img"); bind("f-move","move"); bind("f-attack","attack");
+  bind("f-ability","ability"); bind("f-copyLimit","copyLimit");
+
+  buildGrid("grid-move", m.movePattern || [], (pattern) => MINIONS[activeIndex].movePattern = pattern);
+  buildGrid("grid-attack", m.attackPattern || [], (pattern) => MINIONS[activeIndex].attackPattern = pattern);
+}
+
+function buildGrid(containerId, pattern, onChange){
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  const set = new Set(pattern.map(([r,c]) => `${r},${c}`));
+  for(let r = -3; r <= 3; r++){
+    for(let c = -3; c <= 3; c++){
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      if(r === 0 && c === 0){
+        cell.classList.add("center");
+      } else {
+        if(set.has(`${r},${c}`)) cell.classList.add("on");
+        cell.addEventListener("click", () => {
+          const key = `${r},${c}`;
+          if(set.has(key)){ set.delete(key); cell.classList.remove("on"); }
+          else { set.add(key); cell.classList.add("on"); }
+          onChange([...set].map(s => s.split(",").map(Number)));
+        });
+      }
+      container.appendChild(cell);
+    }
+  }
+}
+
+function esc(str){
+  return String(str).replace(/[&<>"']/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
+}
+
+/* ---------- toolbar actions ---------- */
+document.getElementById("btn-new").addEventListener("click", () => {
+  MINIONS.push({ id:"new-minion", name:"New Minion", cost:1, tier:"offense", img:"src/mob-new.png",
+    move:"", attack:"", ability:"", movePattern:[], attackPattern:[] });
+  activeIndex = MINIONS.length - 1;
+  renderList(); renderForm();
+});
+
+document.getElementById("btn-duplicate").addEventListener("click", () => {
+  if(!MINIONS[activeIndex]) return;
+  const copy = JSON.parse(JSON.stringify(MINIONS[activeIndex]));
+  copy.id = copy.id + "-copy";
+  copy.name = copy.name + " (copy)";
+  MINIONS.splice(activeIndex+1, 0, copy);
+  activeIndex++;
+  renderList(); renderForm();
+});
+
+document.getElementById("btn-delete").addEventListener("click", () => {
+  if(!MINIONS[activeIndex]) return;
+  if(!confirm(`Delete "${MINIONS[activeIndex].name}"?`)) return;
+  MINIONS.splice(activeIndex, 1);
+  activeIndex = Math.max(0, activeIndex - 1);
+  renderList(); renderForm();
+});
+
+/* ---------- export ---------- */
+function generateFileText(){
+  const lines = [];
+  lines.push(`/* CHEGG minion roster — generated by the Data Forge tool.`);
+  lines.push(`   Offsets are [row, col] relative to the minion's own square (center = [0,0]). */`);
+  lines.push("");
+  lines.push("const MINIONS = [");
+  MINIONS.forEach((m, i) => {
+    lines.push("  {");
+    lines.push(`    id:${JSON.stringify(m.id)}, name:${JSON.stringify(m.name)}, cost:${m.cost},${m.costLabel ? ` costLabel:${JSON.stringify(m.costLabel)},` : ""} tier:${JSON.stringify(m.tier)},`);
+    lines.push(`    img:${JSON.stringify(m.img)},`);
+    lines.push(`    move:${JSON.stringify(m.move)},`);
+    lines.push(`    attack:${JSON.stringify(m.attack)},`);
+    lines.push(`    ability:${JSON.stringify(m.ability)},`);
+    lines.push(`    movePattern:${JSON.stringify(m.movePattern)}, attackPattern:${JSON.stringify(m.attackPattern)}${m.copyLimit ? `, copyLimit:${JSON.stringify(m.copyLimit)}` : ""}`);
+    lines.push(`  }${i < MINIONS.length-1 ? "," : ""}`);
+  });
+  lines.push("];");
+  lines.push("");
+  lines.push(`if (typeof module !== "undefined") module.exports = { MINIONS };`);
+  return lines.join("\n");
+}
+
+document.getElementById("btn-generate").addEventListener("click", () => {
+  document.getElementById("export-output").value = generateFileText();
+});
+
+document.getElementById("btn-copy").addEventListener("click", async () => {
+  const out = document.getElementById("export-output");
+  if(!out.value) out.value = generateFileText();
+  try{ await navigator.clipboard.writeText(out.value); }
+  catch(e){ out.select(); document.execCommand("copy"); }
+  const btn = document.getElementById("btn-copy");
+  const orig = btn.textContent; btn.textContent = "Copied!"; setTimeout(()=>btn.textContent=orig, 1400);
+});
+
+document.getElementById("btn-download").addEventListener("click", () => {
+  const out = document.getElementById("export-output");
+  if(!out.value) out.value = generateFileText();
+  const blob = new Blob([out.value], {type:"text/javascript"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "minions-data.js";
+  a.click();
+});
+
+document.getElementById("btn-import").addEventListener("click", () => {
+  const raw = document.getElementById("import-input").value;
+  if(!raw.trim()) return;
+  try{
+    const sandbox = {};
+    const fn = new Function("module", raw + "\n;module.exports = typeof MINIONS !== 'undefined' ? { MINIONS } : module.exports;");
+    fn(sandbox);
+    if(sandbox.exports && Array.isArray(sandbox.exports.MINIONS)){
+      MINIONS = sandbox.exports.MINIONS;
+      activeIndex = 0;
+      renderList(); renderForm();
+      alert(`Loaded ${MINIONS.length} minions.`);
+    } else {
+      alert("Couldn't find a MINIONS array in that file.");
+    }
+  }catch(e){
+    alert("Failed to parse that file:\n" + e.message);
+  }
+});
+
+/* ---------- init ---------- */
+renderList();
+renderForm();
+</script>
+</body>
+</html>
