@@ -1,6 +1,6 @@
 // CHEGG site — shared behaviour
 
-const SERVER_IP = "acorezero.qzz.io:20503";
+const SERVER_IP = "chegg.asrv.qzz.io";
 
 function initNavToggle(){
   const nav = document.querySelector(".site-nav");
