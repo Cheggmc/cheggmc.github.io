@@ -182,6 +182,11 @@ p{margin:0 0 1em;color:var(--cream-dim);}
   font-size:11px;
   color:var(--cream-dim);
   margin-left:8px;
+}
+.ip-tertiary{
+  font-size:11px;
+  color:var(--amber);
+  margin-left:8px;
 } 
 
 /* ---------- sections ---------- */
