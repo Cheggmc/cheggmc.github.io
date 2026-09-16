@@ -140,8 +140,6 @@ p{margin:0 0 1em;color:var(--cream-dim);}
 .btn:hover{transform:translateY(-2px);} 
 .btn-primary{background:var(--amber); color:#241a08;} 
 .btn-primary:hover{background:var(--amber-hi);} 
-.btn-green{background:var(--green); color:#241a08;} 
-.btn-green:hover{background:darken(var(--green), 10%);} 
 .btn-ghost{background:transparent; border-color:var(--line); color:var(--cream);} 
 .btn-ghost:hover{border-color:var(--cream-dim);} 
 .btn-discord{background:#2b2f4a; color:#c9cdf5; border-color:#3b4070;} 
@@ -177,12 +175,7 @@ p{margin:0 0 1em;color:var(--cream-dim);}
   background:var(--panel); border:1px solid var(--line); border-radius:10px;
   padding:16px 20px; margin-bottom:28px;
 }
-.hero-ip .ip-value{font-family:var(--font-head); font-size:22px; font-weight:700;} 
-.ip-secondary{
-  font-size:11px;
-  color:var(--cream-dim);
-  margin-left:8px;
-} 
+.hero-ip .ip-value{font-family:varPathfair, font-weight:700; font-size:22pxx 
 
 /* ---------- sections ---------- */
 section{padding:76px 0;} 
