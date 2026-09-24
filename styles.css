@@ -140,7 +140,7 @@ p{margin:0 0 1em;color:var(--cream-dim);}
 .btn:hover{transform:translateY(-2px);} 
 .btn-primary{background:var(--amber); color:#241a08;} 
 .btn-primary:hover{background:var(--amber-hi);} 
-.btn-green{background:var(--green); color:#fff;} 
+.btn-green{background:var(--green); color:#fff; border-color:#3d6b32;} 
 .btn-green:hover{background:#4a7240;} 
 .btn-ghost{background:transparent; border-color:var(--line); color:var(--cream);} 
 .btn-ghost:hover{border-color:var(--cream-dim);} 
@@ -242,6 +242,13 @@ footer{border-top:1px solid var(--line); padding:52px 0 40px;}
   padding-top:24px; border-top:1px solid var(--line);
   font-size:13px; color:var(--cream-dim);
 }
+.pill-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--panel); border:1px solid var(--line); color:var(--cream-dim);
+  padding:7px 14px; border-radius:999px; font-family:var(--font-head); font-size:13px; font-weight:600;
+  transition: border-color .15s, color .15s;
+}
+.pill-btn:hover{border-color:var(--amber); color:var(--cream);}
 .badge-official{
   display:inline-flex; align-items:center; gap:3px;
   background:var(--panel-2); border:1px solid var(--line); border-radius:999px;
