@@ -357,31 +357,6 @@ table.rules-table th{color:var(--cream-dim); font-family:var(--font-head); font-
 .roadmap-list .r-title{font-weight:700; font-family:var(--font-head); margin-bottom:2px;} 
 .roadmap-list .r-desc{font-size:13.5px; color:var(--cream-dim); margin:0;} 
 
-/* ---------- discord v2 embed preview (no accent) ---------- */
-.discord-v2-wrap{padding:24px 0 0;}
-.discord-v2-label{font-family:var(--font-pixel); font-size:10px; letter-spacing:.14em; color:var(--cream-dim); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
-.discord-v2-label::before{content:""; width:8px; height:8px; background:#5865f2; border-radius:50%;}
-.discord-v2{
-  background:#2b2d31; border:1px solid #232428; border-radius:8px; padding:16px 16px 12px; max-width:520px;
-  font-family:"gg sans", "Inter", sans-serif; color:#f2f3f5;
-}
-.discord-v2-title{font-weight:700; font-size:16px; color:#fff; margin:0 0 6px;}
-.discord-v2-text{font-size:14px; line-height:1.45; color:#dbdee1; margin:0;}
-.discord-v2-text code{background:#232428; padding:1px 4px; border-radius:4px; font-size:13px; color:#f2f3f5;}
-.discord-v2-sep{height:1px; background:#3f4147; margin:12px 0; border:none;}
-.discord-v2-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
-.discord-btn{
-  display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:4px; font-size:14px; font-weight:500; text-decoration:none; border:none; cursor:pointer;
-}
-.discord-btn svg{width:16px;height:16px;}
-.discord-btn-discord{background:#5865f2; color:#fff;}
-.discord-btn-discord:hover{background:#4752c4;}
-.discord-btn-link{background:#4e5058; color:#fff;}
-.discord-btn-link:hover{background:#6d6f78;}
-.discord-btn-modrinth{background:#1bd96a; color:#0a1a12;}
-.discord-btn-modrinth:hover{background:#18bf5e;}
-.discord-v2-json{margin-top:12px; background:#1e1f22; border:1px solid #232428; border-radius:6px; padding:10px 12px; font-family:monospace; font-size:11px; color:#b5bac1; overflow:auto; max-height:220px; white-space:pre;}
-
 @media (max-width:760px){
   .nav-links{display:none;} 
   .nav-toggle{display:block;} 
