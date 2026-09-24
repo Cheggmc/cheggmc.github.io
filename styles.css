@@ -88,8 +88,11 @@ p{margin:0 0 1em;color:var(--cream-dim);}
 }
 .site-nav .container{
   display:flex; align-items:center; justify-content:space-between;
-  height:68px; gap:20px;
+  height:68px; gap:20px; position:relative;
 }
+.btn:disabled, .btn[aria-disabled="true"]{opacity:.5; cursor:not-allowed; transform:none;}
+.skip-link{position:absolute; left:-9999px; top:0; background:var(--amber); color:#241a08; padding:8px 14px; border-radius:0 0 8px 0; z-index:100; font-weight:700;}
+.skip-link:focus{left:0;}
 .brand{
   display:flex; align-items:center; gap:10px;
   font-family:var(--font-pixel); font-size:14px; color:var(--cream);
