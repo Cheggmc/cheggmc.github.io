@@ -9,37 +9,18 @@ function initNavToggle(){
   btn.addEventListener("click", () => nav.classList.toggle("open"));
 }
 
-function escapeHtml(s){
-  return String(s == null ? "" : s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function safeParseArray(json, fallback){
-  try{
-    const v = JSON.parse(json);
-    return Array.isArray(v) ? v : fallback;
-  }catch(e){
-    return fallback;
-  }
-}
-
 function initCopyButtons(){
   document.querySelectorAll("[data-copy-ip]").forEach(btn => {
     const label = btn.querySelector(".copy-label");
     btn.addEventListener("click", async () => {
-      const ip = btn.getAttribute("data-ip") || SERVER_IP;
       try{
-        await navigator.clipboard.writeText(ip);
+        await navigator.clipboard.writeText(SERVER_IP);
       }catch(e){
         const ta = document.createElement("textarea");
-        ta.value = ip;
+        ta.value = SERVER_IP;
         document.body.appendChild(ta);
         ta.select();
-        try{ document.execCommand("copy"); }catch(_){}
+        document.execCommand("copy");
         document.body.removeChild(ta);
       }
       const original = label ? label.textContent : null;
@@ -91,33 +72,34 @@ function renderMinionCards(){
     card.dataset.tier = m.tier;
     card.dataset.cost = m.cost;
 
-    const moveP = Array.isArray(m.movePattern) ? m.movePattern : [];
-    const attackP = Array.isArray(m.attackPattern) ? m.attackPattern : [];
     card.innerHTML = `
       <div class="m-head">
-        <div class="m-icon"><img src="${escapeHtml(m.img)}" alt="${escapeHtml(m.name)} spawn egg icon" loading="lazy"></div>
+        <div class="m-icon"><img src="${m.img}" alt="${m.name} spawn egg icon" loading="lazy"></div>
         <div>
-          <h3 class="m-name">${escapeHtml(m.name)}</h3>
-          <span class="m-tag tag-${escapeHtml(m.tier)}">${escapeHtml(tierLabel(m.tier))}</span>
+          <h3 class="m-name">${m.name}</h3>
+          <span class="m-tag tag-${m.tier}">${tierLabel(m.tier)}</span>
         </div>
-        <span class="m-cost">${escapeHtml(m.costLabel ? m.costLabel : m.cost + " mana")}</span>
+        <span class="m-cost">${m.costLabel ? m.costLabel : m.cost + " mana"}</span>
       </div>
       <div class="m-body">
         <div class="m-desc">
           <dl>
-            <dt>Move</dt><dd>${escapeHtml(m.move)}</dd>
-            <dt>Attack</dt><dd>${escapeHtml(m.attack)}</dd>
-            <dt>Ability</dt><dd>${escapeHtml(m.ability)}</dd>
+            <dt>Move</dt><dd>${m.move}</dd>
+            <dt>Attack</dt><dd>${m.attack}</dd>
+            <dt>Ability</dt><dd>${m.ability}</dd>
           </dl>
-          ${m.copyLimit ? `<div class="m-limit">${escapeHtml(m.copyLimit)}</div>` : ""}
+          ${m.copyLimit ? `<div class="m-limit">${m.copyLimit}</div>` : ""}
         </div>
         <div>
-          <div class="pattern-grid"></div>
+          <div class="pattern-grid" data-move='${JSON.stringify(m.movePattern)}' data-attack='${JSON.stringify(m.attackPattern)}'></div>
         </div>
       </div>
     `;
     grid.appendChild(card);
-    renderPatternGrid(card.querySelector(".pattern-grid"), moveP, attackP);
+  });
+
+  grid.querySelectorAll(".pattern-grid").forEach(g => {
+    renderPatternGrid(g, JSON.parse(g.dataset.move), JSON.parse(g.dataset.attack));
   });
 
   initMinionFilters();
@@ -125,13 +107,13 @@ function renderMinionCards(){
 
 function initMinionFilters(){
   const chips = document.querySelectorAll(".filter-chip");
-  const grid = document.querySelector("#minion-grid");
+  const cards = document.querySelectorAll(".minion-card");
   chips.forEach(chip => {
     chip.addEventListener("click", () => {
       chips.forEach(c => c.classList.remove("active"));
       chip.classList.add("active");
       const filter = chip.dataset.filter;
-      grid.querySelectorAll(".minion-card").forEach(card => {
+      cards.forEach(card => {
         const show = filter === "all" || card.dataset.tier === filter;
         card.style.display = show ? "" : "none";
       });
@@ -146,6 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // highlight the matching example pattern grid on the how-to-play page, if present
   document.querySelectorAll("[data-example-pattern]").forEach(el => {
-    renderPatternGrid(el, safeParseArray(el.dataset.move || "[]", []), safeParseArray(el.dataset.attack || "[]", []));
+    renderPatternGrid(el, JSON.parse(el.dataset.move || "[]"), JSON.parse(el.dataset.attack || "[]"));
   });
 });

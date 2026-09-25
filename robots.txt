@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /editor.html
-
-Sitemap: https://cheggmc.github.io/sitemap.xml
